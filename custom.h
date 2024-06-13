@@ -4,6 +4,7 @@
 
 #include <map>
 
+// font with icons
 extern ImFont* iconfont;
 
 using namespace ImGui;

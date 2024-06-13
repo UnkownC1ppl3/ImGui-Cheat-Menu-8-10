@@ -1,4 +1,3 @@
-//global vars
 
 
 static bool checkbox = false;

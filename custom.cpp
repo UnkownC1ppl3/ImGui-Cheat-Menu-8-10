@@ -80,8 +80,6 @@ bool custom::tab(const char* label, const ImVec2& size_arg, ImGuiButtonFlags fla
 bool custom::tabchild(const char* str_id, const ImVec2& size_arg, bool border, ImGuiWindowFlags extra_flags)
 {
     ImGuiWindow* window = GetCurrentWindow();
-    //PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(23, 8));
-    //PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5, 8));
     return custom::tabchild_ex(str_id, window->GetID(str_id), size_arg, border, extra_flags | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove);
 }
 
@@ -99,13 +97,12 @@ bool custom::tabchild_ex(const char* name, ImGuiID id, const ImVec2& size_arg, b
     ImVec2 size = ImFloor(size_arg);
     const int auto_fit_axises = ((size.x == 0.0f) ? (1 << ImGuiAxis_X) : 0x00) | ((size.y == 0.0f) ? (1 << ImGuiAxis_Y) : 0x00);
     if (size.x <= 0.0f)
-        size.x = ImMax(content_avail.x + size.x, 4.0f); // Arbitrary minimum child size (0.0f causing too much issues)
+        size.x = ImMax(content_avail.x + size.x, 4.0f); 
     if (size.y <= 0.0f)
         size.y = ImMax(content_avail.y + size.y, 4.0f);
     SetNextWindowSize(size);
 
 
-    // Build up name. If you need to append to a same child from multiple location in the ID stack, use BeginChild(ImGuiID id) with a stable value.
     const char* temp_window_name;
     if (name)
         ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%s_%08X", parent_window->Name, name, id);
@@ -125,17 +122,14 @@ bool custom::tabchild_ex(const char* name, ImGuiID id, const ImVec2& size_arg, b
     parent_window->DrawList->AddText(child_window->Pos + ImVec2(5, 2), ImColor(255, 255, 255, 129), name);
     ImGui::NewLine();
 
-    // Set the cursor to handle case where the user called SetNextWindowPos()+BeginChild() manually.
-    // While this is not really documented/defined, it seems that the expected thing to do.
     if (child_window->BeginCount == 1)
         parent_window->DC.CursorPos = child_window->Pos;
 
-    // Process navigation-in immediately so NavInit can run on first frame
     if (g.NavActivateId == id && !(flags & ImGuiWindowFlags_NavFlattened) && (child_window->DC.NavLayersActiveMask != 0 || child_window->DC.NavHasScroll))
     {
         FocusWindow(child_window);
         NavInitWindow(child_window, false);
-        SetActiveID(id + 1, child_window); // Steal ActiveId with another arbitrary id so that key-press won't activate child item
+        SetActiveID(id + 1, child_window); 
         g.ActiveIdSource = ImGuiInputSource_Nav;
     }
     return ret;
@@ -233,7 +227,6 @@ bool custom::MenuChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, b
 
 
     ImRect bb(parent_window->DC.CursorPos.x, parent_window->DC.CursorPos.y, parent_window->DC.CursorPos.x + size.x, parent_window->DC.CursorPos.y + size.y);
-    // Build up name. If you need to append to a same child from multiple location in the ID stack, use BeginChild(ImGuiID id) with a stable value.
     const char* temp_window_name;
     if (name)
         ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%s_%08X", parent_window->Name, name, id);
@@ -242,7 +235,6 @@ bool custom::MenuChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, b
 
     parent_window->DrawList->AddRectFilled(bb.Min, bb.Max, ImColor(30, 30, 30), 10.0f);
     parent_window->DrawList->AddRect(bb.Min, bb.Min + ImVec2(size.x, 35), ImColor(44, 44, 44), 10.0f, ImDrawCornerFlags_Top);
-    /*parent_window->DrawList->AddRectFilledMultiColorRounded(bb.Min, bb.Min + ImVec2(size.x, 35), ImColor(12, 12, 12, 255), ImColor(245, 40, 145), ImColor(245, 40, 145), ImColor(245, 40, 145), ImColor(25, 25, 25), 10.0f, ImDrawCornerFlags_Top);*/
     parent_window->DrawList->AddRectFilledMultiColorRounded(bb.Min, bb.Min + ImVec2(size.x - 45, 35), ImColor(25, 25, 25, 255), ImColor(245, 40, 145, 50), ImColor(245, 40, 145, 0), ImColor(245, 40, 145, 0), ImColor(245, 40, 145, 50), 10.0f, ImDrawCornerFlags_TopLeft);
     parent_window->DrawList->AddRect(bb.Min, bb.Max, ImColor(40, 40, 40), 10.0f);
 

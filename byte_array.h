@@ -1,6 +1,3 @@
-//GenerateCode by  Крайслер, 2018
-//GenerateCode by  Крайслер, 2018
-//GenerateCode by  Крайслер, 2018
 
 //File size: 78744
 unsigned char lexendsb[] =
